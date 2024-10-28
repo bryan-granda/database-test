@@ -1,12 +1,7 @@
 package com.database.database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -89,6 +84,24 @@ public class OrganizationController {
       }
       
       return events.toString();
+    }
+    catch (Exception e){
+      System.out.println("Error: " + e.getMessage());
+      return "Error";
+    }
+  }
+  
+  @DeleteMapping(path="/deleteOrganization")
+  public @ResponseBody String deleteOrganization (@RequestParam Integer organizationId) {
+    try{
+      boolean organizationExists = organizationRepository.findById(organizationId).isPresent();
+      if (!organizationExists){
+        System.out.println("Organization Not Found");
+        return "Error";
+      }
+      Organization organization = organizationRepository.findById(organizationId).get();
+      organizationRepository.delete(organization);
+      return "Deleted";
     }
     catch (Exception e){
       System.out.println("Error: " + e.getMessage());
